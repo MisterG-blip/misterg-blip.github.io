@@ -13,6 +13,23 @@
             background-color: #0d0d0d;
             background: radial-gradient(circle at top, #1a1a1a 0%, #000000 80%);
         }
+
+        /* Logo oben rechts */
+        .top-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 80px;        /* Größe anpassen */
+            height: auto;
+            z-index: 1000;
+            filter: drop-shadow(0 0 10px #00eaff); /* leichter Glow */
+            transition: transform 0.3s;
+        }
+
+        .top-logo:hover {
+            transform: scale(1.1); /* kleines Hover-Feedback */
+        }
+
         .overlay {
             min-height: 100vh;
             display: flex;
@@ -22,18 +39,21 @@
             padding: 40px 20px;
             text-align: center;
         }
+
         h1 {
             color: #00eaff;
             text-shadow: 0 0 15px #00eaff;
             margin-bottom: 15px;
             font-size: 2.2em;
         }
+
         p {
             max-width: 600px;
             margin-bottom: 30px;
             line-height: 1.6;
             color: #cfcfcf;
         }
+
         a.button {
             display: inline-block;
             padding: 12px 24px;
@@ -46,10 +66,12 @@
             transition: all 0.3s ease;
             box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
         }
+
         a.button:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 0 18px rgba(255, 0, 255, 0.7);
         }
+
         footer {
             position: absolute;
             bottom: 15px;
@@ -61,6 +83,9 @@
     </style>
 </head>
 <body>
+    <!-- Logo oben rechts -->
+    <img src="fuchs-logo.png" alt="Logo" class="top-logo">
+
     <div class="overlay">
         <h1>Mister G – App-Entwickler</h1>
         <p>Ich entwickle unterhaltsame Apps mit spannenden Ideen und klarer Vision. Schau dich um und entdecke meine Projekte!</p>
