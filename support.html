@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mister G - Support</title>
+<style>
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #E0E0E0;
+        background-color: #0d0d0d;
+        background: radial-gradient(circle at top, #1a1a1a 0%, #000000 80%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+    }
+
+    h1 {
+        color: #00eaff;
+        text-shadow: 0 0 15px #00eaff;
+        margin-bottom: 15px;
+        font-size: 2.2em;
+    }
+
+    p {
+        max-width: 600px;
+        margin-bottom: 40px;
+        line-height: 1.6;
+        color: #cfcfcf;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 16px 32px;
+        margin: 10px;
+        background: linear-gradient(90deg, #00eaff, #ff00ff);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+    }
+
+    .button:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 0 18px rgba(255, 0, 255, 0.7);
+    }
+
+    .button.disabled {
+        background: #666;
+        color: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+        pointer-events: none;
+    }
+
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 50px;
+    }
+
+    footer {
+        font-size: 0.9em;
+        color: #666;
+    }
+</style>
+</head>
+<body>
+    <h1>Unterstütze Mister G</h1>
+    <p>Wenn dir meine Spiele und Projekte gefallen, kannst du hier unkompliziert etwas Unterstützung geben. Alles freiwillig, nichts aufdringlich.</p>
+
+    <div class="button-container">
+        <a class="button" href="https://www.paypal.com/donate?hosted_button_id=DEINE_ID" target="_blank">Donations</a>
+        <a class="button" href="https://deine-werbung-seite.com" target="_blank">Werbung gucken</a>
+        <a class="button disabled" href="#">Affiliate (irgendwann verfügbar)</a>
+    </div>
+
+    <footer>© 2025 MisterG</footer>
+</body>
+</html>
