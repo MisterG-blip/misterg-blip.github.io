@@ -51,7 +51,30 @@
             color: #cfcfcf;
         }
 
-        .ad-button, .ads-section {
+        /* Einheitliche Button-Styles wie auf dem Portal */
+        a.button {
+            display: inline-block;
+            min-width: 180px;
+            padding: 16px 24px;
+            margin: 5px;
+            background: linear-gradient(90deg, #ffcc00, #ff9900);
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(255, 204, 0, 0.5);
+        }
+
+        a.button:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 25px rgba(255, 204, 0, 0.7);
+        }
+
+        /* Ads-Sektion */
+        .ads-section {
             display: block;
             width: 300px;
             max-width: 80%;
@@ -70,6 +93,10 @@
         .ad-button:hover {
             transform: translateY(-2px) scale(1.03);
             box-shadow: 0 0 25px rgba(255,0,128,0.7);
+        }
+
+        .footer-links {
+            margin-top: 30px;
         }
 
         footer {
@@ -91,11 +118,10 @@
 
     <div class="overlay">
         <h1>Unterstütze Mister G</h1>
-        <p>Danke, dass du hier wild auf Links klickst oder Anzeigen ansiehst – lass die großen Firmen zahlen, so unterstüzt du mich!</p>
+        <p>Danke, dass du hier wild auf Links klickst oder Anzeigen ansiehst – lass die großen Firmen zahlen, so unterstützt du mich!</p>
 
-        <!-- Beispiel Ads -->
+        <!-- AdSense Block -->
         <div class="ads-section">
-            <!-- AdSense Block -->
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-format="auto"
@@ -105,6 +131,7 @@
             </script>
         </div>
 
+        <!-- Weitere Werbung / Affiliate -->
         <div class="ads-section">
             <a class="ad-button" href="https://example.com/affiliate1" target="_blank">Weitere Werbung 1</a>
             <a class="ad-button" href="https://example.com/affiliate2" target="_blank">Weitere Werbung 2</a>
@@ -113,10 +140,10 @@
 
         <p>Danke, dass du das Projekt unterstützt!</p>
 
-         <div class="footer-links">
-          <a class="button" href="https://misterg-blip.github.io/">Home</a>
+        <!-- Footer mit leuchtendem Home-Button -->
+        <div class="footer-links">
+            <a class="button" href="https://misterg-blip.github.io/">Home</a>
         </div>    
-
     </div>
        
     <footer>© 2026 MisterG</footer>
