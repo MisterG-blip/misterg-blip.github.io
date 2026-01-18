@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mister G – Werbung & Support</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #E0E0E0;
+            background-color: #0d0d0d;
+            background: radial-gradient(circle at top, #1a1a1a 0%, #000000 80%);
+        }
+
+        .top-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            filter: drop-shadow(0 0 10px #00eaff);
+            transition: transform 0.3s;
+        }
+
+        .top-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .overlay {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #00eaff;
+            text-shadow: 0 0 15px #00eaff;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+        }
+
+        p {
+            max-width: 600px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #cfcfcf;
+        }
+
+        .ad-button, .ads-section {
+            display: block;
+            width: 300px;
+            max-width: 80%;
+            margin: 10px auto;
+            padding: 16px;
+            background: linear-gradient(90deg, #ff0080, #ffed00);
+            color: #000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(255,0,128,0.5);
+            transition: all 0.3s ease;
+        }
+
+        .ad-button:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 25px rgba(255,0,128,0.7);
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+
+    <!-- Google AdSense Script -->
+    <script data-ad-client="ca-pub-DEINE-ID-HIER" async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+</head>
+<body>
+    <img src="fuchs-logo.png" alt="Logo" class="top-logo">
+
+    <div class="overlay">
+        <h1>Unterstütze Mister G</h1>
+        <p>Hier kannst du durch freiwilliges Klicken oder Anzeigen das Projekt unterstützen.</p>
+
+        <!-- Beispiel Ads -->
+        <div class="ads-section">
+            <!-- AdSense Block -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
+        <div class="ads-section">
+            <a class="ad-button" href="https://example.com/affiliate1" target="_blank">Weitere Werbung 1</a>
+            <a class="ad-button" href="https://example.com/affiliate2" target="_blank">Weitere Werbung 2</a>
+            <a class="ad-button" href="https://example.com/affiliate3" target="_blank">Weitere Werbung 3</a>
+        </div>
+
+        <p>Danke, dass du das Projekt unterstützt!</p>
+    </div>
+        <div class="footer-links">
+          <a class="button" href="https://misterg-blip.github.io/">Home</a>
+        </div>    
+
+    <footer>© 2026 MisterG</footer>
+</body>
+</html>
