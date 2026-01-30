@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lost Soldier – Game Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #0a0a0a;
+            --bg-dark: #151515;
+            --text-light: #d4d4d4;
+            --text-dim: #6a6a6a;
+            --accent: #8a8a8a;
+            --border: #2a2a2a;
+            --warning-yellow: #ffd700;
+            --warning-black: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Courier Prime", monospace;
+            background: var(--bg-black);
+            color: var(--text-light);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Noise texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Studio logo - small and subtle */
+        .studio-logo {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            opacity: 0.4;
+            z-index: 100;
+            transition: opacity 0.3s ease;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .studio-logo:hover {
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header with LSS branding */
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            border-bottom: 3px solid var(--border);
+            padding-bottom: 40px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .lss-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: clamp(3rem, 8vw, 6rem);
+            letter-spacing: 0.15em;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-weight: 400;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Weathered/distressed effect on title */
+        .lss-title::after {
+            content: 'LSS';
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            z-index: -1;
+            color: var(--accent);
+            letter-spacing: 0.15em;
+        }
+
+        .subtitle {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 0.3em;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* Game selection */
+        .game-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 1.5s ease-out;
+            animation-delay: 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        /* Game card */
+        .game-card {
+            background: var(--bg-dark);
+            border: 2px solid var(--border);
+            text-decoration: none;
+            color: var(--text-light);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: left 0.6s ease;
+            z-index: 1;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-card:hover {
+            border-color: var(--accent);
+            background: #1a1a1a;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        /* Preview image */
+        .game-preview {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            display: block;
+            position: relative;
+            filter: brightness(0.7) contrast(1.1);
+            transition: filter 0.4s ease;
+        }
+
+        .game-card:hover .game-preview {
+            filter: brightness(0.85) contrast(1.2);
+        }
+
+        /* Restricted access badge */
+        .restricted-badge {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            color: #cc0000;
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            padding: 12px 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+            z-index: 10;
+            border-top: 3px solid #cc0000;
+            border-bottom: 3px solid #cc0000;
+        }
+
+        /* Game content */
+        .game-content {
+            padding: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-number {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1rem;
+            color: var(--text-dim);
+            letter-spacing: 0.2em;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            color: var(--text-light);
+        }
+
+        .game-desc {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+
+        .game-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .meta-tag {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Placeholder preview for games without images */
+        .preview-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-placeholder::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(138, 138, 138, 0.05) 20px,
+                rgba(138, 138, 138, 0.05) 40px
+            );
+            animation: slidePattern 20s linear infinite;
+        }
+
+        @keyframes slidePattern {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        .placeholder-icon {
+            font-size: 4rem;
+            color: var(--text-dim);
+            z-index: 1;
+        }
+
+        /* Footer navigation */
+        .footer-nav {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 2px solid var(--border);
+            animation: fadeIn 1.8s ease-out;
+            animation-delay: 0.6s;
+            animation-fill-mode: both;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            color: var(--text-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            padding: 10px 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .nav-link:hover {
+            color: var(--text-light);
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.02);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            padding: 20px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 60px 20px;
+            }
+
+            .game-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .studio-logo {
+                width: 40px;
+                height: 40px;
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .restricted-badge {
+                font-size: 1rem;
+                padding: 10px 15px;
+                letter-spacing: 0.15em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Subtle studio branding -->
+    <img src="fuchs-logo.png" alt="Mister G" class="studio-logo">
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="lss-title">LSS</div>
+            <div class="subtitle">Lost Soldier: Survival</div>
+            <p class="tagline">Wähle deine Mission. Jede Entscheidung hat Konsequenzen.</p>
+        </header>
+
+        <!-- Game Selection -->
+        <section class="game-section">
+            <div class="game-grid">
+                <!-- Stillness -->
+                <a href="./stillness/index.html" class="game-card">
+                    <div style="position: relative;">
+                        <img src="cabin_out.jpg" alt="LS: Stillness" class="game-preview">
+                        <div class="restricted-badge">KEINE FREIGABE</div>
+                    </div>
+                    <div class="game-content">
+                        <div class="game-number">MISSION 01</div>
+                        <h2 class="game-title">Stillness</h2>
+                        <p class="game-desc">
+                            Verloren im Wald. Entscheidungen unter Zeitdruck. 
+                            Überlebe durch Isolation und Hoffnung. Mehrere Enden basierend auf deinen Werten.
+                        </p>
+                        <div class="game-meta">
+                            <span class="meta-tag">Narrative</span>
+                            <span class="meta-tag">20-30 Min</span>
+                            <span class="meta-tag">Mehrere Enden</span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Runner -->
+                <a href="./runners/index.html" class="game-card">
+                    <div class="preview-placeholder">
+                        <span class="placeholder-icon">🦊</span>
+                    </div>
+                    <div class="game-content">
+                        <div class="game-number">MISSION 02</div>
+                        <h2 class="game-title">Run</h2>
+                        <p class="game-desc">
+                            Der Fuchs flieht durch die Ruinen. Endless Runner durch 
+                            post-Vorfall Landschaft. Wie weit kommst du?
+                        </p>
+                        <div class="game-meta">
+                            <span class="meta-tag">Action</span>
+                            <span class="meta-tag">Endless</span>
+                            <span class="meta-tag">Highscore</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer Navigation -->
+        <nav class="footer-nav">
+            <div class="nav-links">
+                <a href="https://misterg-blip.github.io/support" class="nav-link">Support</a>
+                <a href="https://misterg-blip.github.io/" class="nav-link">Home</a>
+            </div>
+            <footer>© 2026 MISTER G – LSS UNIVERSE</footer>
+        </nav>
+    </div>
+</body>
+</html>
