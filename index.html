@@ -57,30 +57,50 @@
         display: inline-block;
         padding: 12px 24px;
         margin: 10px;
-        background: linear-gradient(90deg, #00eaff, #ff00ff);
-        color: #fff;
         text-decoration: none;
         border-radius: 8px;
         font-weight: bold;
         transition: all 0.3s ease;
         box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+        text-align: center;
     }
 
     a.button:hover {
         transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 0 18px rgba(255, 0, 255, 0.7);
     }
 
     /* Top Projekt Button */
     .highlight-button {
         font-size: 1.3em;
         padding: 16px 32px;
-        background: linear-gradient(90deg, #ff0080, #ffed00);
+        background: linear-gradient(90deg, #ff0080, #ffed00); /* Gold / Pink Gradient */
         color: #000;
         box-shadow: 0 0 20px rgba(255, 0, 128, 0.7);
     }
 
-    /* Rechtliches / Footer Buttons */
+    /* Social Media Buttons */
+    .social-button {
+        background: linear-gradient(90deg, #00eaff, #ff00ff);
+        color: #fff;
+        box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+    }
+
+    .social-button:hover {
+        box-shadow: 0 0 18px rgba(255, 0, 255, 0.7);
+    }
+
+    /* Games Buttons */
+    .game-button {
+        background: linear-gradient(90deg, #00eaff, #ff00ff);
+        color: #fff;
+        box-shadow: 0 0 12px rgba(0, 234, 255, 0.4);
+    }
+
+    .game-button:hover {
+        box-shadow: 0 0 18px rgba(255, 0, 255, 0.7);
+    }
+
+    /* Footer / Rechtliches Buttons */
     .legal-button {
         font-size: 0.9em;
         background: #444;
@@ -108,6 +128,14 @@
         gap: 10px;
         margin-bottom: 30px;
     }
+
+    /* Responsive Anpassung */
+    @media (max-width: 600px) {
+        a.button {
+            width: 80%;
+            padding: 12px 0;
+        }
+    }
 </style>
 </head>
 <body>
@@ -125,17 +153,17 @@
 
         <!-- Social Media -->
         <div class="button-row">
-            <a class="button" href="https://play.google.com/store/apps/dev?id=5394028000260806774&hl=de" target="_blank">Play Store</a>     
-            <a class="button" href="https://www.instagram.com/project_lost_soldier/" target="_blank">Instagram</a>
-            <a class="button" href="https://www.youtube.com/@project_lost_soldier" target="_blank">YouTube</a>
-            <a class="button" href="https://www.tiktok.com/@gnnrgrsdrf" target="_blank">TikTok</a>        
+            <a class="button social-button" href="https://play.google.com/store/apps/dev?id=5394028000260806774&hl=de" target="_blank">Play Store</a>     
+            <a class="button social-button" href="https://www.instagram.com/project_lost_soldier/" target="_blank">Instagram</a>
+            <a class="button social-button" href="https://www.youtube.com/@project_lost_soldier" target="_blank">YouTube</a>
+            <a class="button social-button" href="https://www.tiktok.com/@gnnrgrsdrf" target="_blank">TikTok</a>        
         </div>
 
         <!-- Games / Portale -->
         <div class="button-row">
-            <a class="button" href="https://misterg-blip.github.io/portal.html">Lost Soldier Universe</a>
-            <a class="button" href="https://mister-g-249.itch.io/lost-soldier-foxhunt" target="_blank">itch.io</a>
-            <a class="button" href="https://misterg-blip.github.io/portal.html">Browser Games</a>
+            <a class="button game-button" href="https://misterg-blip.github.io/portal.html">Lost Soldier Universe</a>
+            <a class="button game-button" href="https://mister-g-249.itch.io/lost-soldier-foxhunt" target="_blank">itch.io</a>
+            <a class="button game-button" href="https://misterg-blip.github.io/portal.html">Browser Games</a>
         </div>
 
         <!-- Footer Buttons / Rechtliches -->
