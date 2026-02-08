@@ -1,0 +1,143 @@
+/* ==========================================================================
+   LS_PORTAL.HTML - SPECIFIC STYLES
+   Nur für die "Lost Soldier Series" Seite
+   ========================================================================== */
+
+/* LSS-spezifische CSS Variablen */
+:root {
+    --warning-yellow: #ffd700;
+    --warning-black: #000000;
+}
+
+/* Container Anpassung für mehr Padding oben */
+.container {
+    padding: 140px 40px 80px;
+}
+
+/* Header mit LSS Branding */
+header {
+    text-align: center;
+    margin-bottom: 80px;
+    border-bottom: 3px solid var(--border);
+    padding-bottom: 40px;
+    animation: fadeIn 1.2s ease-out;
+}
+
+.lss-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: 0.15em;
+    margin-bottom: 10px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    font-weight: 400;
+    position: relative;
+    display: inline-block;
+}
+
+/* Weathered/Distressed Effect */
+.lss-title::after {
+    content: 'LSS';
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    z-index: -1;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+}
+
+.subtitle {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.3em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.tagline {
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-style: italic;
+}
+
+/* Game Section */
+.game-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 1.5s ease-out;
+    animation-delay: 0.3s;
+    animation-fill-mode: both;
+}
+
+/* Detailed Grid Layout (größere Cards) */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+/* LSS-spezifische Game Content Anpassungen */
+.game-content {
+    padding: 30px;
+    text-align: left;
+}
+
+.game-number {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1rem;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    margin-bottom: 15px;
+}
+
+.game-title {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.game-desc {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+}
+
+.game-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.meta-tag {
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+}
+
+/* Placeholder Icon Größe */
+.placeholder-icon {
+    font-size: 4rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        padding: 120px 20px 60px;
+    }
+
+    .game-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}

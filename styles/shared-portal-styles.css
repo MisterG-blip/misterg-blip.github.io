@@ -1,0 +1,361 @@
+/* ==========================================================================
+   MISTER G - SHARED PORTAL STYLES
+   Gemeinsame Styles für portal.html und LS_portal.html
+   ========================================================================== */
+
+/* CSS Variables */
+:root {
+    --bg-black: #0a0a0a;
+    --bg-dark: #151515;
+    --text-light: #d4d4d4;
+    --text-dim: #6a6a6a;
+    --accent: #8a8a8a;
+    --border: #2a2a2a;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body & Background */
+body {
+    font-family: "Courier Prime", monospace;
+    background: var(--bg-black);
+    color: var(--text-light);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Noise Texture Overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   TAB NAVIGATION
+   ========================================================================== */
+
+.tab-navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-dark);
+    border-bottom: 2px solid var(--border);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+}
+
+.tab-link {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 20px 40px;
+    border-right: 1px solid var(--border);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.tab-link:first-child {
+    border-left: 1px solid var(--border);
+}
+
+.tab-link:hover {
+    color: var(--text-light);
+    background: rgba(255,255,255,0.02);
+}
+
+.tab-link.active {
+    color: var(--text-light);
+    background: var(--bg-black);
+    border-bottom: 2px solid var(--accent);
+}
+
+/* ==========================================================================
+   STUDIO LOGO
+   ========================================================================== */
+
+.studio-logo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    opacity: 0.4;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.studio-logo:hover {
+    opacity: 0.7;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+}
+
+/* ==========================================================================
+   CONTAINER
+   ========================================================================== */
+
+.container {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 120px 40px 80px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slidePattern {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+}
+
+/* ==========================================================================
+   GAME CARDS (Shared)
+   ========================================================================== */
+
+.game-card {
+    background: var(--bg-dark);
+    border: 2px solid var(--border);
+    text-decoration: none;
+    color: var(--text-light);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+}
+
+.game-card:hover::before {
+    left: 100%;
+}
+
+.game-card:hover {
+    border-color: var(--accent);
+    background: #1a1a1a;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+/* Game Preview Image/Video */
+.game-preview {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.7) contrast(1.1);
+    transition: filter 0.4s ease;
+}
+
+.game-card:hover .game-preview {
+    filter: brightness(0.85) contrast(1.2);
+}
+
+/* Placeholder for games without preview */
+.preview-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.preview-placeholder::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 20px,
+        rgba(138, 138, 138, 0.05) 20px,
+        rgba(138, 138, 138, 0.05) 40px
+    );
+    animation: slidePattern 20s linear infinite;
+}
+
+.placeholder-icon {
+    font-size: 3rem;
+    color: var(--text-dim);
+    z-index: 1;
+}
+
+/* Game Content */
+.game-content {
+    padding: 15px;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.game-title {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+/* Restricted Access Badge */
+.restricted-badge {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    color: #cc0000;
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    padding: 12px 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    z-index: 10;
+    border-top: 3px solid #cc0000;
+    border-bottom: 3px solid #cc0000;
+}
+
+/* ==========================================================================
+   FOOTER NAVIGATION
+   ========================================================================== */
+
+.footer-nav {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 2px solid var(--border);
+    animation: fadeIn 1.8s ease-out;
+    animation-delay: 0.6s;
+    animation-fill-mode: both;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+.nav-link {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    color: var(--text-light);
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.02);
+}
+
+footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    padding: 20px 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .tab-navigation {
+        gap: 0;
+    }
+
+    .tab-link {
+        padding: 15px 20px;
+        font-size: 1rem;
+    }
+
+    .container {
+        padding: 100px 20px 60px;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .studio-logo {
+        width: 40px;
+        height: 40px;
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .placeholder-icon {
+        font-size: 2.5rem;
+    }
+
+    .restricted-badge {
+        font-size: 1rem;
+        padding: 10px 15px;
+        letter-spacing: 0.15em;
+    }
+}
