@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mister G – Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #0a0a0a;
+            --bg-dark: #151515;
+            --text-light: #d4d4d4;
+            --text-dim: #6a6a6a;
+            --accent: #8a8a8a;
+            --border: #2a2a2a;
+            --red: #cc0000;
+            --green: #2a7a2a;
+            --green-light: #4caf50;
+            --blue: #6bc5ff;
+            --gold: #f0c040;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Courier Prime", monospace;
+            background: var(--bg-black);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Login ─────────────────────────────────────────────────────── */
+        #loginScreen {
+            position: fixed; inset: 0; background: var(--bg-black);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; z-index: 10; gap: 30px;
+        }
+        .login-title { font-family: "Bebas Neue", sans-serif; font-size: 2.5rem; letter-spacing: 0.2em; }
+        .login-sub   { font-size: 0.85rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-top: -20px; }
+        .btn-google  {
+            display: flex; align-items: center; gap: 14px;
+            background: var(--bg-dark); border: 1px solid var(--border);
+            color: var(--text-light); font-family: "Courier Prime", monospace;
+            font-size: 1rem; padding: 14px 28px; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-google:hover { border-color: var(--accent); background: #1a1a1a; }
+        .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
+        .login-hint { font-size: 0.75rem; color: var(--text-dim); max-width: 300px; text-align: center; line-height: 1.6; }
+
+        /* ── Shell ─────────────────────────────────────────────────────── */
+        #appScreen { display: none; }
+
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0;
+            background: var(--bg-dark); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; height: 60px; z-index: 5;
+        }
+        .topbar-title { font-family: "Bebas Neue", sans-serif; font-size: 1.3rem; letter-spacing: 0.2em; }
+        .topbar-user  { display: flex; align-items: center; gap: 12px; font-size: 0.85rem; color: var(--text-dim); }
+        .topbar-user img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border); }
+
+        .btn-signout {
+            font-family: "Bebas Neue", sans-serif; font-size: 0.85rem; letter-spacing: 0.1em;
+            background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+            padding: 5px 12px; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-signout:hover { border-color: var(--red); color: var(--red); }
+
+        .tab-bar {
+            position: fixed; top: 60px; left: 0; right: 0;
+            background: var(--bg-dark); border-bottom: 2px solid var(--border);
+            display: flex; z-index: 4;
+        }
+        .tab-btn {
+            font-family: "Bebas Neue", sans-serif; font-size: 1rem; letter-spacing: 0.15em;
+            padding: 14px 30px; background: transparent; border: none;
+            border-right: 1px solid var(--border); color: var(--text-dim);
+            cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+        }
+        .tab-btn:hover  { color: var(--text-light); background: rgba(255,255,255,0.02); }
+        .tab-btn.active { color: var(--text-light); background: var(--bg-black); border-bottom: 2px solid var(--accent); }
+
+        .container {
+            position: relative; z-index: 1;
+            max-width: 900px; margin: 0 auto;
+            padding: 135px 30px 60px;
+        }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Panels ────────────────────────────────────────────────────── */
+        .panel { background: var(--bg-dark); border: 1px solid var(--border); padding: 30px; margin-bottom: 25px; }
+
+        .section-title {
+            font-family: "Bebas Neue", sans-serif; font-size: 1.3rem; letter-spacing: 0.15em;
+            margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+        }
+
+        /* ── Summary ───────────────────────────────────────────────────── */
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+
+        .summary-card { background: var(--bg-black); border: 1px solid var(--border); padding: 18px; text-align: center; }
+        .summary-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin-bottom: 8px; }
+        .summary-value { font-family: "Bebas Neue", sans-serif; font-size: 1.7rem; }
+        .summary-value.cost     { color: #ff6b6b; }
+        .summary-value.time     { color: var(--blue); }
+        .summary-value.donation { color: var(--gold); }
+        .summary-value.saldo.positive { color: var(--green-light); }
+        .summary-value.saldo.negative { color: #ff6b6b; }
+        .summary-value.count    { color: var(--text-light); }
+
+        /* ── Forms ─────────────────────────────────────────────────────── */
+        .form-row        { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-row.full   { grid-template-columns: 1fr; }
+        .form-row.three  { grid-template-columns: 1fr 1fr 1fr; }
+        .form-group      { display: flex; flex-direction: column; gap: 6px; }
+
+        label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); }
+
+        input, select {
+            background: var(--bg-black); border: 1px solid var(--border);
+            color: var(--text-light); font-family: "Courier Prime", monospace;
+            font-size: 0.95rem; padding: 10px 12px; outline: none;
+            transition: border-color 0.2s; width: 100%;
+        }
+        input:focus, select:focus { border-color: var(--accent); }
+        select option { background: var(--bg-dark); }
+
+        .key-hint { font-size: 0.7rem; color: var(--text-dim); margin-top: 4px; letter-spacing: 0.05em; }
+
+        /* ── Buttons ───────────────────────────────────────────────────── */
+        .btn { font-family: "Bebas Neue", sans-serif; font-size: 1.05rem; letter-spacing: 0.15em; padding: 11px 24px; border: none; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+        .btn-primary { background: var(--text-light); color: var(--bg-black); }
+        .btn-primary:hover { background: #fff; }
+        .btn-primary:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
+        .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); font-size: 0.8rem; padding: 5px 10px; }
+        .btn-danger:hover { background: var(--red); color: #fff; }
+        .btn-edit { background: transparent; color: var(--accent); border: 1px solid var(--border); font-size: 0.8rem; padding: 5px 10px; }
+        .btn-edit:hover { border-color: var(--accent); color: var(--text-light); }
+
+        /* ── Lists ─────────────────────────────────────────────────────── */
+        .filter-row { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .filter-btn { font-family: "Bebas Neue", sans-serif; font-size: 0.85rem; letter-spacing: 0.1em; padding: 5px 14px; background: transparent; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
+        .filter-btn.active, .filter-btn:hover { border-color: var(--accent); color: var(--text-light); }
+
+        .entry-list    { display: flex; flex-direction: column; gap: 8px; }
+        .project-list  { display: flex; flex-direction: column; gap: 8px; }
+        .donation-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .entry-item, .donation-item {
+            background: var(--bg-black); border: 1px solid var(--border);
+            padding: 14px 18px; display: grid; align-items: center;
+            gap: 15px; transition: border-color 0.2s;
+        }
+        .entry-item    { grid-template-columns: 1fr auto auto auto; }
+        .donation-item { grid-template-columns: auto 1fr auto auto; }
+        .entry-item:hover, .donation-item:hover { border-color: var(--accent); }
+
+        .entry-info    { display: flex; flex-direction: column; gap: 3px; }
+        .entry-game    { font-family: "Bebas Neue", sans-serif; font-size: 0.95rem; letter-spacing: 0.08em; }
+        .entry-game .display-name { color: var(--text-light); }
+        .entry-game .key-tag { font-size: 0.65rem; color: var(--text-dim); background: var(--bg-dark); border: 1px solid var(--border); padding: 1px 6px; margin-left: 6px; vertical-align: middle; font-family: "Courier Prime", monospace; letter-spacing: 0; }
+        .entry-desc    { font-size: 0.78rem; color: var(--text-dim); }
+        .entry-type    { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; padding: 3px 8px; border: 1px solid var(--border); color: var(--text-dim); white-space: nowrap; }
+        .entry-value   { font-family: "Bebas Neue", sans-serif; font-size: 1rem; white-space: nowrap; }
+        .entry-value.cost     { color: #ff6b6b; }
+        .entry-value.time     { color: var(--blue); }
+        .entry-value.donation { color: var(--gold); }
+
+        /* Donation-spezifisch */
+        .donation-avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: var(--bg-dark); border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-family: "Bebas Neue", sans-serif; font-size: 1rem; color: var(--gold);
+            flex-shrink: 0;
+        }
+        .donation-info  { display: flex; flex-direction: column; gap: 2px; }
+        .donation-name  { font-family: "Bebas Neue", sans-serif; font-size: 0.95rem; letter-spacing: 0.08em; }
+        .donation-meta  { font-size: 0.75rem; color: var(--text-dim); }
+        .anon-label     { color: var(--text-dim); font-style: italic; }
+
+        .project-item { background: var(--bg-black); border: 1px solid var(--border); padding: 16px 20px; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 15px; transition: border-color 0.2s; }
+        .project-item:hover { border-color: var(--accent); }
+        .project-key { font-family: "Bebas Neue", sans-serif; font-size: 0.85rem; letter-spacing: 0.1em; color: var(--text-dim); background: var(--bg-dark); border: 1px solid var(--border); padding: 3px 10px; white-space: nowrap; }
+        .project-names { display: flex; flex-direction: column; gap: 2px; }
+        .project-displayname { font-family: "Bebas Neue", sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; }
+        .project-internalname { font-size: 0.75rem; color: var(--text-dim); }
+
+        .empty-state { text-align: center; padding: 35px; color: var(--text-dim); font-size: 0.85rem; font-style: italic; border: 1px dashed var(--border); }
+
+        .sync-indicator { font-size: 0.72rem; color: var(--text-dim); text-align: right; margin-top: 8px; letter-spacing: 0.05em; min-height: 1em; }
+        .sync-indicator.syncing { color: var(--blue); }
+        .sync-indicator.synced  { color: var(--green-light); }
+        .sync-indicator.error   { color: var(--red); }
+
+        /* ── Modal ─────────────────────────────────────────────────────── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 50; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--bg-dark); border: 1px solid var(--border); padding: 35px; width: 100%; max-width: 460px; }
+        .modal-title { font-family: "Bebas Neue", sans-serif; font-size: 1.4rem; letter-spacing: 0.15em; margin-bottom: 20px; }
+        .modal-note  { font-size: 0.8rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 20px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .btn-cancel { background: transparent; color: var(--text-dim); border: 1px solid var(--border); font-size: 0.9rem; padding: 8px 16px; cursor: pointer; }
+        .btn-cancel:hover { border-color: var(--accent); color: var(--text-light); }
+
+        /* ── Toast ─────────────────────────────────────────────────────── */
+        .toast { position: fixed; bottom: 28px; right: 28px; background: var(--bg-dark); border: 1px solid var(--accent); color: var(--text-light); font-family: "Bebas Neue", sans-serif; font-size: 0.95rem; letter-spacing: 0.1em; padding: 13px 22px; z-index: 100; transform: translateY(80px); opacity: 0; transition: all 0.3s ease; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        @media (max-width: 640px) {
+            .form-row, .form-row.three { grid-template-columns: 1fr; }
+            .entry-item    { grid-template-columns: 1fr auto auto; }
+            .donation-item { grid-template-columns: 1fr auto auto; }
+            .entry-type    { display: none; }
+            .project-item  { grid-template-columns: 1fr auto; }
+            .project-key   { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login -->
+    <div id="loginScreen">
+        <div class="login-title">Admin Panel</div>
+        <div class="login-sub">Mister G – Projekttracking</div>
+        <button class="btn-google" onclick="signInWithGoogle()">
+            <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Mit Google anmelden
+        </button>
+        <div class="login-hint">Nur dein Google-Account hat Zugriff.</div>
+    </div>
+
+    <!-- App -->
+    <div id="appScreen">
+        <div class="topbar">
+            <div class="topbar-title">Admin Panel</div>
+            <div class="topbar-user">
+                <img id="userPhoto" src="" alt="">
+                <span id="userName"></span>
+                <button class="btn-signout" onclick="signOut()">Abmelden</button>
+            </div>
+        </div>
+
+        <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchTab('tracking', this)">Tracking</button>
+            <button class="tab-btn"        onclick="switchTab('donations', this)">Donations</button>
+            <button class="tab-btn"        onclick="switchTab('projects',  this)">Projekte</button>
+        </div>
+
+        <div class="container">
+
+            <!-- ── Tab: Tracking ──────────────────────────────────────── -->
+            <div id="tab-tracking" class="tab-panel active">
+                <div class="panel">
+                    <div class="section-title">Übersicht</div>
+                    <div class="summary-grid">
+                        <div class="summary-card">
+                            <div class="summary-label">Einträge</div>
+                            <div class="summary-value count" id="totalEntries">–</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Kosten gesamt</div>
+                            <div class="summary-value cost" id="totalCost">–</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Donations gesamt</div>
+                            <div class="summary-value donation" id="totalDonations">–</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Saldo</div>
+                            <div class="summary-value saldo" id="totalSaldo">–</div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-label">Stunden gesamt</div>
+                            <div class="summary-value time" id="totalHours">–</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-title">Neuer Eintrag</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Projekt</label>
+                            <select id="inputProject">
+                                <option value="">— Projekt wählen —</option>
+                            </select>
+                            <div class="key-hint" id="selectedKeyHint"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Typ</label>
+                            <select id="inputType" onchange="toggleTypeFields()">
+                                <option value="cost">Kosten</option>
+                                <option value="time">Arbeitszeit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="costRow" class="form-row">
+                        <div class="form-group">
+                            <label>Betrag (€)</label>
+                            <input type="number" id="inputAmount" placeholder="0.00" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Kategorie</label>
+                            <select id="inputCategory">
+                                <option value="Software">Software / Tools</option>
+                                <option value="Assets">Assets / Grafiken</option>
+                                <option value="Audio">Audio / Musik</option>
+                                <option value="Hardware">Hardware</option>
+                                <option value="Sonstiges">Sonstiges</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="timeRow" class="form-row" style="display:none">
+                        <div class="form-group">
+                            <label>Stunden</label>
+                            <input type="number" id="inputHours" placeholder="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Minuten</label>
+                            <input type="number" id="inputMinutes" placeholder="0" min="0" max="59">
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Beschreibung (optional)</label>
+                            <input type="text" id="inputDesc" placeholder="z.B. Claude AI Abo...">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Datum</label>
+                            <input type="date" id="inputDate">
+                        </div>
+                        <div class="form-group" style="justify-content:flex-end">
+                            <button class="btn btn-primary" id="addBtn" onclick="addEntry()">+ Eintrag hinzufügen</button>
+                        </div>
+                    </div>
+                    <div class="sync-indicator" id="syncStatus"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-title">Alle Einträge</div>
+                    <div class="filter-row">
+                        <button class="filter-btn active" onclick="setFilter('all', this)">Alle</button>
+                        <button class="filter-btn" onclick="setFilter('cost', this)">Kosten</button>
+                        <button class="filter-btn" onclick="setFilter('time', this)">Zeit</button>
+                    </div>
+                    <div class="entry-list" id="entryList">
+                        <div class="empty-state">Lade Daten...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Tab: Donations ─────────────────────────────────────── -->
+            <div id="tab-donations" class="tab-panel">
+                <div class="panel">
+                    <div class="section-title">Neue Donation eintragen</div>
+                    <div class="form-row three">
+                        <div class="form-group">
+                            <label>Betrag (€)</label>
+                            <input type="number" id="donAmount" placeholder="0.00" step="0.01" min="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Name des Spenders (optional)</label>
+                            <input type="text" id="donName" placeholder="Leer lassen = Anonym">
+                        </div>
+                        <div class="form-group">
+                            <label>Datum</label>
+                            <input type="date" id="donDate">
+                        </div>
+                    </div>
+                    <div class="form-row full">
+                        <div class="form-group">
+                            <label>Nachricht (optional)</label>
+                            <input type="text" id="donMessage" placeholder="z.B. Weiter so!">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Sichtbarkeit</label>
+                            <select id="donVisibility">
+                                <option value="public">Öffentlich (auf Support-Seite sichtbar)</option>
+                                <option value="private">Privat (nur für mich)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="justify-content:flex-end">
+                            <button class="btn btn-primary" id="donBtn" onclick="addDonation()">+ Donation eintragen</button>
+                        </div>
+                    </div>
+                    <div class="sync-indicator" id="donSyncStatus"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-title">Alle Donations</div>
+                    <div class="donation-list" id="donationList">
+                        <div class="empty-state">Lade Daten...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Tab: Projekte ──────────────────────────────────────── -->
+            <div id="tab-projects" class="tab-panel">
+                <div class="panel">
+                    <div class="section-title">Neues Projekt anlegen</div>
+                    <div class="form-row three">
+                        <div class="form-group">
+                            <label>Interner Key</label>
+                            <input type="text" id="newProjectKey" placeholder="z.B. runner">
+                            <div class="key-hint">Einmalig, unveränderbar.</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Produktname (öffentlich)</label>
+                            <input type="text" id="newProjectDisplay" placeholder="z.B. Cube Runner">
+                        </div>
+                        <div class="form-group">
+                            <label>Serie / Kategorie</label>
+                            <input type="text" id="newProjectSeries" placeholder="z.B. Lost Soldier">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div></div>
+                        <div class="form-group" style="justify-content:flex-end">
+                            <button class="btn btn-primary" onclick="addProject()">+ Projekt anlegen</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="section-title">Alle Projekte</div>
+                    <div class="project-list" id="projectList">
+                        <div class="empty-state">Noch keine Projekte angelegt.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Rename Modal -->
+    <div class="modal-overlay" id="renameModal">
+        <div class="modal">
+            <div class="modal-title">Produktname ändern</div>
+            <div class="modal-note">Der interne Key bleibt fix — alle Einträge bleiben korrekt verknüpft.</div>
+            <div class="form-group">
+                <label>Neuer Produktname</label>
+                <input type="text" id="renameInput" placeholder="Neuer Name...">
+            </div>
+            <div class="form-group" style="margin-top:12px">
+                <label>Serie / Kategorie</label>
+                <input type="text" id="renameSeriesInput" placeholder="z.B. Lost Soldier">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeRenameModal()">Abbrechen</button>
+                <button class="btn btn-primary" onclick="saveRename()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module">
+        import { initializeApp }
+            from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut as fbSignOut, onAuthStateChanged }
+            from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js';
+        import { getFirestore, collection, addDoc, deleteDoc, updateDoc, doc,
+                  onSnapshot, query, orderBy, Timestamp }
+            from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+        // ────────────────────────────────────────────────────────────────
+        // 🔧 FIREBASE CONFIG
+        // ────────────────────────────────────────────────────────────────
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLsqULu5r1Cmk_Le71moOH5xY7oQmPx0o",
+            authDomain: "kostenuebersicht.firebaseapp.com",
+            projectId: "kostenuebersicht",
+            storageBucket: "kostenuebersicht.firebasestorage.app",
+            messagingSenderId: "665602880815",
+            appId: "1:665602880815:web:b7441273a5b1e20f19ddda"
+        };
+        // ────────────────────────────────────────────────────────────────
+
+        const app  = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db   = getFirestore(app);
+
+        let entries   = [];
+        let projects  = [];
+        let donations = [];
+        let currentFilter  = 'all';
+        let renameTargetId = null;
+        let unsubEntries, unsubProjects, unsubDonations;
+
+        // ── Auth ──────────────────────────────────────────────────────────
+        window.signInWithGoogle = async () => {
+            try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+            catch (e) { showToast('Login fehlgeschlagen.'); }
+        };
+
+        window.signOut = async () => {
+            [unsubEntries, unsubProjects, unsubDonations].forEach(u => u && u());
+            await fbSignOut(auth);
+        };
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appScreen').style.display   = 'block';
+                document.getElementById('userName').textContent  = user.displayName;
+                document.getElementById('userPhoto').src         = user.photoURL || '';
+                startListening(user.uid);
+            } else {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('appScreen').style.display   = 'none';
+            }
+        });
+
+        // ── Listeners ─────────────────────────────────────────────────────
+        function startListening(uid) {
+            unsubProjects = onSnapshot(
+                query(collection(db, 'users', uid, 'projects'), orderBy('createdAt', 'asc')),
+                snap => { projects = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderProjects(); updateProjectSelect(); }
+            );
+            unsubEntries = onSnapshot(
+                query(collection(db, 'users', uid, 'entries'), orderBy('createdAt', 'desc')),
+                snap => { entries = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderEntries(); updateSummary(); }
+            );
+            unsubDonations = onSnapshot(
+                query(collection(db, 'users', uid, 'donations'), orderBy('createdAt', 'desc')),
+                snap => { donations = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderDonations(); updateSummary(); }
+            );
+        }
+
+        // ── Summary ───────────────────────────────────────────────────────
+        function updateSummary() {
+            const totalCost = entries.filter(e => e.type === 'cost').reduce((s, e) => s + (e.amount  || 0), 0);
+            const totalMin  = entries.filter(e => e.type === 'time').reduce((s, e) => s + (e.minutes || 0), 0);
+            const totalDon  = donations.reduce((s, d) => s + (d.amount || 0), 0);
+            const saldo     = totalDon - totalCost;
+
+            document.getElementById('totalEntries').textContent  = entries.length;
+            document.getElementById('totalCost').textContent     = formatCost(totalCost);
+            document.getElementById('totalHours').textContent    = formatTime(totalMin);
+            document.getElementById('totalDonations').textContent = formatCost(totalDon);
+
+            const saldoEl = document.getElementById('totalSaldo');
+            saldoEl.textContent = (saldo >= 0 ? '+' : '') + formatCost(saldo);
+            saldoEl.className   = 'summary-value saldo ' + (saldo >= 0 ? 'positive' : 'negative');
+        }
+
+        // ── Donations ─────────────────────────────────────────────────────
+        window.addDonation = async () => {
+            const user    = auth.currentUser;
+            const amount  = parseFloat(document.getElementById('donAmount').value);
+            const name    = document.getElementById('donName').value.trim();
+            const date    = document.getElementById('donDate').value;
+            const message = document.getElementById('donMessage').value.trim();
+            const visibility = document.getElementById('donVisibility').value;
+
+            if (isNaN(amount) || amount <= 0) { showToast('Bitte gültigen Betrag eingeben!'); return; }
+            if (!date) { showToast('Bitte Datum angeben!'); return; }
+
+            setSyncStatus('donSyncStatus', 'syncing', 'Speichert...');
+            document.getElementById('donBtn').disabled = true;
+
+            try {
+                await addDoc(collection(db, 'users', user.uid, 'donations'), {
+                    amount, name: name || null, date, message: message || null,
+                    visibility, createdAt: Timestamp.now()
+                });
+                document.getElementById('donAmount').value  = '';
+                document.getElementById('donName').value    = '';
+                document.getElementById('donMessage').value = '';
+                document.getElementById('donDate').value    = new Date().toISOString().split('T')[0];
+                setSyncStatus('donSyncStatus', 'synced', '✓ Gespeichert');
+                showToast('Donation eingetragen!');
+            } catch (e) {
+                setSyncStatus('donSyncStatus', 'error', '✗ Fehler');
+                showToast('Fehler!'); console.error(e);
+            } finally {
+                document.getElementById('donBtn').disabled = false;
+            }
+        };
+
+        window.deleteDonation = async (id) => {
+            const user = auth.currentUser;
+            try { await deleteDoc(doc(db, 'users', user.uid, 'donations', id)); showToast('Gelöscht.'); }
+            catch (e) { showToast('Fehler!'); }
+        };
+
+        function renderDonations() {
+            const list = document.getElementById('donationList');
+            if (donations.length === 0) {
+                list.innerHTML = '<div class="empty-state">Noch keine Donations eingetragen.</div>';
+                return;
+            }
+            list.innerHTML = donations.map(d => `
+                <div class="donation-item">
+                    <div class="donation-avatar">${d.name ? d.name.charAt(0).toUpperCase() : '?'}</div>
+                    <div class="donation-info">
+                        <div class="donation-name">${d.name || '<span class="anon-label">Anonym</span>'}</div>
+                        <div class="donation-meta">
+                            ${formatDate(d.date)}
+                            ${d.message ? ' · "' + d.message + '"' : ''}
+                            · ${d.visibility === 'public' ? '🌐 öffentlich' : '🔒 privat'}
+                        </div>
+                    </div>
+                    <div class="entry-value donation">${formatCost(d.amount)}</div>
+                    <button class="btn btn-danger" onclick="deleteDonation('${d.id}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        // ── Projects ──────────────────────────────────────────────────────
+        window.addProject = async () => {
+            const user   = auth.currentUser;
+            const key    = document.getElementById('newProjectKey').value.trim().toLowerCase().replace(/\s+/g, '-');
+            const name   = document.getElementById('newProjectDisplay').value.trim();
+            const series = document.getElementById('newProjectSeries').value.trim();
+            if (!key)  { showToast('Bitte Key angeben!'); return; }
+            if (!name) { showToast('Bitte Produktname angeben!'); return; }
+            if (projects.some(p => p.key === key)) { showToast('Key existiert bereits!'); return; }
+            try {
+                await addDoc(collection(db, 'users', user.uid, 'projects'), { key, displayName: name, series, createdAt: Timestamp.now() });
+                ['newProjectKey','newProjectDisplay','newProjectSeries'].forEach(id => document.getElementById(id).value = '');
+                showToast('Projekt angelegt!');
+            } catch (e) { showToast('Fehler!'); }
+        };
+
+        window.openRenameModal = (id) => {
+            renameTargetId = id;
+            const p = projects.find(p => p.id === id);
+            document.getElementById('renameInput').value       = p?.displayName || '';
+            document.getElementById('renameSeriesInput').value = p?.series || '';
+            document.getElementById('renameModal').classList.add('open');
+        };
+        window.closeRenameModal = () => { document.getElementById('renameModal').classList.remove('open'); renameTargetId = null; };
+        window.saveRename = async () => {
+            if (!renameTargetId) return;
+            const user    = auth.currentUser;
+            const newName = document.getElementById('renameInput').value.trim();
+            const newSer  = document.getElementById('renameSeriesInput').value.trim();
+            if (!newName) { showToast('Bitte Namen eingeben!'); return; }
+            try { await updateDoc(doc(db, 'users', user.uid, 'projects', renameTargetId), { displayName: newName, series: newSer }); closeRenameModal(); showToast('Aktualisiert!'); }
+            catch (e) { showToast('Fehler!'); }
+        };
+        window.deleteProject = async (id) => {
+            const user = auth.currentUser;
+            const p    = projects.find(p => p.id === id);
+            if (entries.some(e => e.projectKey === p?.key)) { showToast('Erst alle Einträge löschen!'); return; }
+            try { await deleteDoc(doc(db, 'users', user.uid, 'projects', id)); showToast('Projekt gelöscht.'); }
+            catch (e) { showToast('Fehler!'); }
+        };
+
+        function renderProjects() {
+            const list = document.getElementById('projectList');
+            if (projects.length === 0) { list.innerHTML = '<div class="empty-state">Noch keine Projekte angelegt.</div>'; return; }
+            list.innerHTML = projects.map(p => {
+                const count = entries.filter(e => e.projectKey === p.key).length;
+                return `
+                    <div class="project-item">
+                        <div class="project-key">${p.key}</div>
+                        <div class="project-names">
+                            <div class="project-displayname">${p.displayName}</div>
+                            <div class="project-internalname">${p.series ? p.series + ' · ' : ''}${count} Eintrag${count !== 1 ? 'e' : ''}</div>
+                        </div>
+                        <button class="btn btn-edit"   onclick="openRenameModal('${p.id}')">Umbenennen</button>
+                        <button class="btn btn-danger" onclick="deleteProject('${p.id}')">✕</button>
+                    </div>`;
+            }).join('');
+        }
+
+        function updateProjectSelect() {
+            const sel = document.getElementById('inputProject');
+            const cur = sel.value;
+            sel.innerHTML = '<option value="">— Projekt wählen —</option>' +
+                projects.map(p => `<option value="${p.key}">${p.displayName} [${p.key}]</option>`).join('');
+            if (cur) sel.value = cur;
+            updateKeyHint();
+        }
+
+        // ── Entries ───────────────────────────────────────────────────────
+        window.addEntry = async () => {
+            const user       = auth.currentUser;
+            const projectKey = document.getElementById('inputProject').value;
+            const type       = document.getElementById('inputType').value;
+            const desc       = document.getElementById('inputDesc').value.trim();
+            const date       = document.getElementById('inputDate').value;
+            if (!projectKey) { showToast('Bitte Projekt wählen!'); return; }
+            const entry = { projectKey, type, desc, date, createdAt: Timestamp.now() };
+            if (type === 'cost') {
+                const amount = parseFloat(document.getElementById('inputAmount').value);
+                if (isNaN(amount) || amount < 0) { showToast('Bitte gültigen Betrag!'); return; }
+                entry.amount = amount; entry.category = document.getElementById('inputCategory').value;
+            } else {
+                const h = parseInt(document.getElementById('inputHours').value) || 0;
+                const m = parseInt(document.getElementById('inputMinutes').value) || 0;
+                if (h === 0 && m === 0) { showToast('Bitte Zeit eingeben!'); return; }
+                entry.minutes = h * 60 + m;
+            }
+            setSyncStatus('syncStatus', 'syncing', 'Speichert...');
+            document.getElementById('addBtn').disabled = true;
+            try {
+                await addDoc(collection(db, 'users', user.uid, 'entries'), entry);
+                clearEntryForm(); setSyncStatus('syncStatus', 'synced', '✓ Gespeichert'); showToast('Eintrag gespeichert!');
+            } catch (e) { setSyncStatus('syncStatus', 'error', '✗ Fehler'); showToast('Fehler!'); }
+            finally { document.getElementById('addBtn').disabled = false; }
+        };
+
+        window.deleteEntry = async (id) => {
+            const user = auth.currentUser;
+            try { await deleteDoc(doc(db, 'users', user.uid, 'entries', id)); showToast('Gelöscht.'); }
+            catch (e) { showToast('Fehler!'); }
+        };
+
+        function renderEntries() {
+            const filtered = currentFilter === 'all' ? entries : entries.filter(e => e.type === currentFilter);
+            const list = document.getElementById('entryList');
+            if (filtered.length === 0) { list.innerHTML = '<div class="empty-state">Keine Einträge vorhanden.</div>'; return; }
+            list.innerHTML = filtered.map(e => {
+                const proj = projects.find(p => p.key === e.projectKey);
+                const name = proj ? proj.displayName : e.projectKey;
+                return `
+                    <div class="entry-item">
+                        <div class="entry-info">
+                            <div class="entry-game"><span class="display-name">${name}</span><span class="key-tag">${e.projectKey}</span></div>
+                            <div class="entry-desc">${e.desc || '—'} · ${formatDate(e.date)}</div>
+                        </div>
+                        <div class="entry-type">${e.type === 'cost' ? (e.category || 'Kosten') : 'Arbeitszeit'}</div>
+                        <div class="entry-value ${e.type}">${e.type === 'cost' ? formatCost(e.amount) : formatTime(e.minutes)}</div>
+                        <button class="btn btn-danger" onclick="deleteEntry('${e.id}')">✕</button>
+                    </div>`;
+            }).join('');
+            renderProjects();
+        }
+
+        // ── UI ────────────────────────────────────────────────────────────
+        window.switchTab = (tab, btn) => {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            btn.classList.add('active');
+        };
+
+        window.setFilter = (filter, btn) => {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderEntries();
+        };
+
+        window.toggleTypeFields = () => {
+            const type = document.getElementById('inputType').value;
+            document.getElementById('costRow').style.display = type === 'cost' ? 'grid' : 'none';
+            document.getElementById('timeRow').style.display = type === 'time' ? 'grid' : 'none';
+        };
+
+        function updateKeyHint() {
+            const key  = document.getElementById('inputProject').value;
+            document.getElementById('selectedKeyHint').textContent = key ? `Key: ${key}` : '';
+        }
+        document.getElementById('inputProject').addEventListener('change', updateKeyHint);
+
+        function clearEntryForm() {
+            ['inputProject','inputDesc','inputAmount','inputHours','inputMinutes'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('selectedKeyHint').textContent = '';
+        }
+
+        function setSyncStatus(elId, state, msg) {
+            const el = document.getElementById(elId);
+            el.className = `sync-indicator ${state}`;
+            el.textContent = msg;
+            if (state === 'synced') setTimeout(() => { el.textContent = ''; }, 3000);
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────
+        function formatCost(v)   { return (v||0).toLocaleString('de-DE', { style:'currency', currency:'EUR' }); }
+        function formatTime(min) { const h=Math.floor((min||0)/60), m=(min||0)%60; return `${h}h ${String(m).padStart(2,'0')}m`; }
+        function formatDate(s)   { if(!s) return ''; const [y,m,d]=s.split('-'); return `${d}.${m}.${y}`; }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2500);
+        }
+
+        // Init
+        document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('donDate').value   = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
