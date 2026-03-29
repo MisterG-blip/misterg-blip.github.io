@@ -112,7 +112,7 @@
             // Nur zählen, wenn echte Seite vorhanden
             if (!gameId || href === "#") return;
 
-            e.preventDefault(); // Navigation stoppen
+            //e.preventDefault(); // Navigation stoppen
 
             if (!sessionStorage.getItem(gameId)) {
                 console.log("TRACK CLICK:", gameId);
