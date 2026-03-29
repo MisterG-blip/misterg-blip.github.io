@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBYt2WNpUzYTwzc8l6rOkLeZyuP8ZfY61M",
@@ -13,4 +13,15 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const db = getDatabase(app);
+
+function trackClick(gameId) {
+  const gameRef = ref(db, `games/${gameId}/views`);
+
+  get(gameRef).then(snapshot => {
+    const current = snapshot.val() || 0;
+    set(gameRef, current + 1);
+  });
+}
+
+export { db, trackClick };
