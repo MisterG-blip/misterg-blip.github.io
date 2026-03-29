@@ -115,6 +115,7 @@
             e.preventDefault(); // Navigation stoppen
 
             if (!sessionStorage.getItem(gameId)) {
+                console.log("TRACK CLICK:", gameId);
                 trackClick(gameId); // 👈 HIER passiert das Zählen
                 sessionStorage.setItem(gameId, "true");
             }
