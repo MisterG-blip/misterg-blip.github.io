@@ -16,6 +16,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 function trackClick(gameId) {
+  console.log("TRACK FUNCTION RUN:", gameId);
   const gameRef = ref(db, `games/${gameId}/views`);
 
   get(gameRef).then(snapshot => {
