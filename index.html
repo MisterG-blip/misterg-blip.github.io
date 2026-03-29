@@ -32,7 +32,7 @@
         <section class="game-section">
             <div class="game-grid">
                 <!-- LS: Stillness -->
-                <a href="./LS_Stillness/stillness.html" target="_blank" rel="noopener" class="game-card">
+                <a href="./LS_Stillness/stillness.html" target="_blank" rel="noopener" class="game-card" data-game-id="stillness>
                     <img src="LS_Stillness/assets/images/cabin_out.jpg" alt="LS: Stillness" class="game-preview">
                     <div class="game-content">
                         <h2 class="game-title">LS: Stillness</h2>
@@ -40,7 +40,7 @@
                 </a>
 
                 <!-- LS: Dead Air -->
-                <a href="#" class="game-card">
+                <a href="#" class="game-card" data-game-id="dead_air>
                     <div style="position: relative;">
                         <img src="LS_DeadAir/assets/images/Leitstelle.jpg" alt="LS: Dead Air" class="game-preview">
                         <div class="restricted-badge">KEINE FREIGABE</div>
@@ -51,7 +51,7 @@
                 </a>
 
                 <!-- Cube Runner -->
-                <a href="./runners/index.html" target="_blank" rel="noopener" class="game-card">
+                <a href="./runners/index.html" target="_blank" rel="noopener" class="game-card" data-game-id="cube_runner>
                     <img src="runners/Logo2.png" alt="Cube Runner" class="game-preview">
                     <div class="game-content">
                         <h2 class="game-title">Cube Runner</h2>
@@ -59,7 +59,7 @@
                 </a>
 
                 <!-- Whisker and Stone -->
-                <a href="./FoxRun/" class="game-card">
+                <a href="./FoxRun/" target="_blank" rel="noopener" class="game-card" data-game-id="WNS>
                     <div style="position: relative;">
                       <img src="FoxRun/assets/splash.png" alt="Whisker and Stone" class="game-preview">
                       <!-- <div class="restricted-badge">In Produktion</div> -->
@@ -70,7 +70,7 @@
                 </a>
 
                  <!-- Cloud for Maybel -->
-                <a href="./cloudformaybel/" class="game-card">
+                <a href="./cloudformaybel/" target="_blank" rel="noopener" class="game-card" data-game-id="CFM>
                     <div style="position: relative;">
                       <img src="cloudformaybel/assets/wallpaper.png" alt="A Cloud for Maybel" class="game-preview">
                       <div class="restricted-badge">Prototyp</div>
@@ -100,5 +100,33 @@
             <footer>© 2026 MISTER G</footer>
         </nav>
     </div>
+    <script type="module">
+        import { db } from "./firebase-config.js"; 
+        import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        document.querySelectorAll(".game-card").forEach(card => {
+        card.addEventListener("click", async (e) => {
+        const gameId = card.dataset.gameId;
+        const href = card.getAttribute("href");
+
+        // Nur zählen, wenn echte Seite vorhanden
+        if (!gameId || href === "#") return;
+
+        e.preventDefault(); // Navigation stoppen
+
+        const gameRef = doc(db, "games", gameId);
+
+        try {
+          await updateDoc(gameRef, {
+            views: increment(1)
+          });
+        } catch (err) {
+          console.error("Zähl-Fehler:", err);
+        }
+        // danach weiter
+        window.open(href, card.target || "_self");
+      });
+    });
+    </script>
 </body>
 </html>
