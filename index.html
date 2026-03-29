@@ -102,38 +102,26 @@
     </div>
     <script type="module">
         import { db } from "./firebase-config.js"; 
-        import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { trackClick } from "./firebase-config.js";        
         
         document.querySelectorAll(".game-card").forEach(card => {
-        card.addEventListener("click", async (e) => {
-            const gameId = card.dataset.gameId;
-            const href = card.getAttribute("href");
+            card.addEventListener("click", async (e) => {
+                const gameId = card.dataset.gameId;
+                const href = card.getAttribute("href");
 
-        // Nur zählen, wenn echte Seite vorhanden
-        if (!gameId || href === "#") return;
+            // Nur zählen, wenn echte Seite vorhanden
+            if (!gameId || href === "#") return;
 
-        e.preventDefault(); // Navigation stoppen
+            e.preventDefault(); // Navigation stoppen
 
-        if (sessionStorage.getItem(gameId)) {
+            if (!sessionStorage.getItem(gameId)) {
+                trackClick(gameId); // 👈 HIER passiert das Zählen
+                sessionStorage.setItem(gameId, "true");
+            }
+
             window.open(href, card.target || "_self");
-            return;
-        }
-
-        sessionStorage.setItem(gameId, "true");
-
-        const gameRef = doc(db, "games", gameId);
-
-        try {
-          await updateDoc(gameRef, {
-            views: increment(1)
-          });
-        }
-        catch (err) {
-          console.error("Zähl-Fehler:", err);
-        }
-        
-      });
-    });
+            });
+        });
     </script>
 </body>
 </html>
