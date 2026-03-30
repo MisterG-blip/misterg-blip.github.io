@@ -374,4 +374,9 @@ footer {
         padding: 10px 15px;
         letter-spacing: 0.15em;
     }
+
+   #sprite-container {
+        display: none;
+   }
+}   
 }
