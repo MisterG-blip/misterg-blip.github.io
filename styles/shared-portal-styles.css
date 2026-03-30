@@ -193,12 +193,12 @@ body::before {
     aspect-ratio: 16 / 9;
     object-fit: cover;
     display: block;
-    filter: brightness(0.7) contrast(1.1);
+    filter: brightness(0.85) contrast(1.05);
     transition: filter 0.4s ease;
 }
 
 .game-card:hover .game-preview {
-    filter: brightness(0.85) contrast(1.2);
+    filter: brightness(1.) contrast(1.2);
 }
 
 /* Placeholder for games without preview */
