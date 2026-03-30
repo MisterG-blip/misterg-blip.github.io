@@ -101,7 +101,7 @@
         </nav>
     </div>
     <div id="sprite-container">
-        <img id="sprite" src="./npc/amina_sprite.png">
+        <img id="sprite" src="amina_sprite.png">
     </div>
     <script type="module">
         import { db } from "./firebase-config.js"; 
@@ -139,11 +139,13 @@
         const BLINK = 1;
         const SMILE = 2;
         const LOOK_RIGHT = 3;
+        const maxFrames = 4;
 
         let isReacting = false;
 
         function setFrame(frame) {
             if (!sprite) return;
+            frame = Math.max(0, Math.min(frame, maxFrames - 1));
             sprite.style.transform = `translateX(-${frame * frameWidth}px)`;
         }
 
