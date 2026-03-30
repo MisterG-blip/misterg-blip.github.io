@@ -100,29 +100,90 @@
             <footer>© 2026 MISTER G</footer>
         </nav>
     </div>
+    <div id="sprite-container">
+        <img id="sprite" src="./npc/amina_sprite.png">
+    </div>
     <script type="module">
         import { db } from "./firebase-config.js"; 
         import { trackClick } from "./firebase-config.js";        
         
+        // =========================
+        // GAME CLICK TRACKING
+        // =========================
         document.querySelectorAll(".game-card").forEach(card => {
             card.addEventListener("click", async (e) => {
                 const gameId = card.dataset.gameId;
                 const href = card.getAttribute("href");
 
-            // Nur zählen, wenn echte Seite vorhanden
-            if (!gameId || href === "#") return;
+                // Nur zählen, wenn echte Seite vorhanden
+                if (!gameId || href === "#") return;
 
-            //e.preventDefault(); // Navigation stoppen
+                //e.preventDefault(); // Navigation stoppen, weil hier aber abgebrochen, ist nichts weiter passiert.
 
-            if (!sessionStorage.getItem(gameId)) {
-                console.log("TRACK CLICK:", gameId);
-                trackClick(gameId); // 👈 HIER passiert das Zählen
-                sessionStorage.setItem(gameId, "true");
-            }
-
-            window.open(href, card.target || "_self");
+                if (!sessionStorage.getItem(gameId)) {
+                    console.log("TRACK CLICK:", gameId);
+                    trackClick(gameId); // 👈 HIER passiert das Zählen
+                    sessionStorage.setItem(gameId, "true");
+                }
+                window.open(href, card.target || "_self");
             });
         });
+
+         // =========================
+        // SPRITE SYSTEM
+        // =========================
+        const sprite = document.getElementById("sprite");
+        const frameWidth = 256;
+
+        const IDLE = 0;
+        const BLINK = 1;
+        const SMILE = 2;
+        const LOOK_RIGHT = 3;
+
+        let isReacting = false;
+
+        function setFrame(frame) {
+            if (!sprite) return;
+            sprite.style.transform = `translateX(-${frame * frameWidth}px)`;
+        }
+
+        function randomBehavior() {
+            if (isReacting) return;
+            let rand = Math.random();
+
+            if (rand < 0.7) {
+                setFrame(IDLE);
+            } 
+            else if (rand < 0.85) {
+                setFrame(BLINK);
+                setTimeout(() => setFrame(IDLE), 200);
+            } 
+            //else if (rand < 0.9) {
+            //    setFrame(SMILE);
+            //    setTimeout(() => setFrame(IDLE), 1000);
+            //} 
+            else {
+                setFrame(LOOK_RIGHT);
+                setTimeout(() => setFrame(IDLE), 1000);
+            }
+        }
+        document.addEventListener("click", () => {
+            if (isReacting) return;
+            isReacting = true;
+            const rand = Math.random();
+
+            if (rand < 0.5) {
+                setFrame(SMILE);
+            } else {
+                setFrame(BLINK);
+            }
+
+            setTimeout(() => {
+                isReacting = false;
+                setFrame(IDLE);
+            }, 600);
+        });
+        setInterval(randomBehavior, 1500);
     </script>
 </body>
 </html>
