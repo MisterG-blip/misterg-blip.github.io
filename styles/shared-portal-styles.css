@@ -130,8 +130,8 @@ body::before {
 
 #sprite-container {
     position: fixed;
-    bottom: 20px;
-    left: 20px; /* oder right: 20px; */
+    bottom: 60px;
+    left: 10px; /* oder right: 20px; */
     width: 256px;  /* kleiner = unaufdringlicher */
     height: 256px;
     overflow: hidden;
@@ -141,7 +141,7 @@ body::before {
 }
 
 #sprite {
-    width: 512px; /* 4 Frames à 128px */
+    width: 1024px; /* 4 Frames à 128px */
 }
 
 /* ==========================================================================
