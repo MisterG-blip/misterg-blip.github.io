@@ -128,6 +128,22 @@ body::before {
     flex-direction: column;
 }
 
+#sprite-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* oder right: 20px; */
+    width: 128px;  /* kleiner = unaufdringlicher */
+    height: 128px;
+    overflow: hidden;
+    z-index: 50;
+    opacity: 0.9;
+    pointer-events: none; /* blockiert keine Klicks */
+}
+
+#sprite {
+    width: 512px; /* 4 Frames à 128px */
+}
+
 /* ==========================================================================
    ANIMATIONS
    ========================================================================== */
