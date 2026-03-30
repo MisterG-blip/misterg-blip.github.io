@@ -132,8 +132,8 @@ body::before {
     position: fixed;
     bottom: 20px;
     left: 20px; /* oder right: 20px; */
-    width: 128px;  /* kleiner = unaufdringlicher */
-    height: 128px;
+    width: 256px;  /* kleiner = unaufdringlicher */
+    height: 256px;
     overflow: hidden;
     z-index: 50;
     opacity: 0.9;
