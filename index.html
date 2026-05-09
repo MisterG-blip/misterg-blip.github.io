@@ -101,7 +101,7 @@
         </nav>
     </div>
     <div id="sprite-container">
-        <img id="sprite" src="./npc/amina_sprite.png">
+        <div id="sprite"></div>  <!-- img → div -->
     </div>
     <script type="module">
         import { db } from "./firebase-config.js"; 
@@ -129,31 +129,36 @@
             });
         });
 
-         // =========================
+        // =========================
         // SPRITE SYSTEM
         // =========================
         const sprites = [
-            "./npc/amina_sprite.png",
-            "./npc/scientist_sprite.png"
+            { src: "./npc/amina_sprite.png",     frameWidth: 256, frameHeight: 256, maxFrames: 4 },
+            { src: "./npc/scientist_sprite.png", frameWidth: 256, frameHeight: 256, maxFrames: 5 }
         ];
-        const randomSprite = sprites[Math.floor(Math.random() * sprites.length)];
-        const sprite = document.getElementById("sprite");
-        sprite.src = randomSprite;
         
-        const frameWidth = 256;
+        const chosen = sprites[Math.floor(Math.random() * sprites.length)];
+        const sprite = document.getElementById("sprite");
+                
+        const frameWidth = chosen.frameWidth;
+        const frameHeight = chosen.frameHeight;
+        const maxFrames = chosen.maxFrames;
+
+        sprite.style.backgroundImage = `url('${chosen.src}')`;
+        sprite.style.width = frameWidth + "px";
+        sprite.style.height = frameHeight + "px";
 
         const IDLE = 0;
         const BLINK = 1;
         const SMILE = 2;
-        const LOOK_RIGHT = 3;
-        const maxFrames = 4;
+        const LOOK_RIGHT = 3;        
 
         let isReacting = false;
 
         function setFrame(frame) {
             if (!sprite) return;
             frame = Math.max(0, Math.min(frame, maxFrames - 1));
-            sprite.style.transform = `translateX(-${frame * frameWidth}px)`;
+            sprite.style.backgroundPosition = `-${frame * frameWidth}px 0px`;
         }
 
         function randomBehavior() {
