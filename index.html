@@ -132,7 +132,14 @@
          // =========================
         // SPRITE SYSTEM
         // =========================
+        const sprites = [
+            "./npc/amina_sprite.png",
+            "./npc/scientist_sprite.png"
+        ];
+        const randomSprite = sprites[Math.floor(Math.random() * sprites.length)];
         const sprite = document.getElementById("sprite");
+        sprite.src = randomSprite;
+        
         const frameWidth = 256;
 
         const IDLE = 0;
