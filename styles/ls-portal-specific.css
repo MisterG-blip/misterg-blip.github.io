@@ -3,7 +3,7 @@
    Nur für die "Lost Soldier Series" Seite
    ========================================================================== */
 
-/* LSS-spezifische CSS Variablen */
+/* LSU-spezifische CSS Variablen */
 :root {
     --warning-yellow: #ffd700;
     --warning-black: #000000;
@@ -14,7 +14,7 @@
     padding: 140px 40px 80px;
 }
 
-/* Header mit LSS Branding */
+/* Header mit LSU Branding */
 header {
     text-align: center;
     margin-bottom: 80px;
@@ -23,7 +23,7 @@ header {
     animation: fadeIn 1.2s ease-out;
 }
 
-.lss-title {
+.lsu-title {
     font-family: "Bebas Neue", sans-serif;
     font-size: clamp(3rem, 8vw, 6rem);
     letter-spacing: 0.15em;
@@ -36,8 +36,8 @@ header {
 }
 
 /* Weathered/Distressed Effect */
-.lss-title::after {
-    content: 'LSS';
+.lsu-title::after {
+    content: 'LSU';
     position: absolute;
     left: 2px;
     top: 2px;
@@ -83,7 +83,7 @@ header {
     margin-bottom: 60px;
 }
 
-/* LSS-spezifische Game Content Anpassungen */
+/* LSU-spezifische Game Content Anpassungen */
 .game-content {
     padding: 30px;
     text-align: left;
